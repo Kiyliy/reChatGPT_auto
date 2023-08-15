@@ -1,5 +1,6 @@
 import requests
 import json
+import time
 
 def shareToken(token,unique_name,expires_in = 0):
     url = "https://ai.fakeopen.com/token/register"
@@ -17,5 +18,17 @@ def shareToken(token,unique_name,expires_in = 0):
         "site_limit": None,
         "show_conversation": "false",
     }
-    response = requests.post(url, headers=headers, data=data)
+    for i in range(3):
+        try:
+            response = requests.post(url, headers=headers, data=data)
+            response.raise_for_status()
+            return response
+        except requests.exceptions.HTTPError as e:
+            print("请求失败: ", e)
+            print("正在重试...")
+            time.sleep(3)
+        
     return response
+
+
+#openai请求地址: api.openai.com/v1/engines/davinci/completions

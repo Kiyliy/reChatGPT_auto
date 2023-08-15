@@ -2,10 +2,18 @@
 
 reChatGPT_auto 是由 [Pandora]([Pool Token (fakeopen.com)](https://ai.fakeopen.com/pool)) 提供支持的工具。
 
-#### 下一阶段计划
+### 下一阶段计划: 
 
-1. 增加重试功能, 报错自动重试
-2. 自动提取poolToken, 并支持一键更新fakeToken和poolToken, 同时保持值不变
+1.支持一件自动更新pool token
+
+2.优化代码逻辑
+
+
+
+#### 0.2:
+
+1. 增加重试功能, 报错自动重试3次
+2. 一键自动提取poolToken
 3. 增加错误账号的excel表头
 
 #### 功能:

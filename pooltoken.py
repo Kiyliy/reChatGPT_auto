@@ -2,9 +2,10 @@ import requests
 import openpyxl
 from queue import Queue
 import json
+import config
 
 ###config
-config_work_book_name = "_GPT账号管理Tokens1.xlsx"  #excel name
+config_work_book_name = config.new_excle_name  #excel name
 config_work_sheets_n = 0 #第一个工作表, default 0
 config_fkrow = 6 #fk in the excel ( 0 is the start)
 config_pk_cnt = 50 #多少个fk生成一个pk , default 50

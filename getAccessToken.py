@@ -8,6 +8,7 @@ from queue import Queue
 import config
 import openpyxl
 from remove_refresh_token import remove_refresh_token
+import time
 
 
 def GetAccessToken(
@@ -36,19 +37,23 @@ def GetAccessToken(
         "password": password,
         # "mfa_code": "",
     }
-    try:
-        response = requests.post(url, headers=headers, data=data)
-    except Exception as e:
-        return e
+    for _ in range(3):
+        try:
+            response = requests.post(url, headers=headers, data=data)
+            response.raise_for_status()
+            break
+        except Exception as e:
+            print(f"账号{username}请求失败，错误信息{e}\n")
+            time.sleep(3)
+            continue
 
     with cnt.get_lock():
         cnt.value += 1
         if response.status_code != 200:
             print(f"{cnt.value}:账号{username}请求失败，状态码{response.status_code}, 返回值{response.json()}\n")
-            return response
         else:
             print(f"{cnt.value}账号{username}:{200}\n")
-            return response
+        return response
     
   
 class GetAccessTokenThread(threading.Thread):
@@ -89,7 +94,7 @@ class GetAccessTokenThread(threading.Thread):
                 row =self.xlsxQueue.get() ##核心代码, 从队列中获取账号密码
                 self.lock.release()
                 username , password = row
-                response = GetAccessToken(username, password,self.cnt) #response状态码如果是200，说明请求失败, 在write的时候处理
+                response = GetAccessToken(username, password,self.cnt) 
                 if response.status_code == 200:
                     fkresponse = shareToken(response.json()["access_token"],username)
                     if config.remove_refresh_token == True:
