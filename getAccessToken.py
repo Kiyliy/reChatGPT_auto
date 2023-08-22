@@ -9,6 +9,7 @@ import config
 import openpyxl
 from remove_refresh_token import remove_refresh_token
 import time
+from getproxy import getProxy
 
 
 def GetAccessToken(
@@ -39,9 +40,11 @@ def GetAccessToken(
     }
     for _ in range(3):
         try:
-            response = requests.post(url, headers=headers, data=data)
-            response.raise_for_status()
-            break
+            response = requests.post(url, headers=headers, data=data,proxies=getProxy())
+            if response.status_code != 200:
+                print(f"账号{username}请求失败，状态码{response.status_code}, 返回值{response.json()}\n")
+                time.sleep(3)
+                break
         except Exception as e:
             print(f"账号{username}请求失败，错误信息{e}\n")
             time.sleep(3)
